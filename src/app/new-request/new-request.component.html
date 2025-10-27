@@ -1,0 +1,249 @@
+<!-----------New ticket form-------------->
+<div class="d-flex  justify-content-center w-100 form ">
+
+  <form action="" class=" rounded-2 d-flex flex-column fw-bold  " #formcollection="ngForm" *ngIf="role==='user'" >
+
+    <!-----Form Heading------->
+    <div>
+      <p class=" fs-4 text-center">New Request</p>
+    </div>
+
+    <!--------------Title text-box and title label-->
+    <div class="d-flex ps-3">
+      <div class="d-flex gap-1 flex-column">
+        <div class=" d-flex flex-column w-75 " *ngIf="clickType==='Edit'">
+          <label for="request-id" class="form-label">Rquest Id<span class="text-danger">*</span></label>
+          <input type="text" id="request-id" name="request-id" class="form-control" [value]="request?.request_id" disabled>
+        </div>
+
+        <div class=" d-flex flex-column w-75 " *ngIf="clickType!=='Edit'">
+          <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" required [(ngModel)]="title" ngModel>
+          <!------validation error for title-->
+          <div *ngIf="formcollection.controls['title']?.hasError('required')&&formcollection.submitted"
+            class="text-danger">
+            Title can't be empty.
+          </div>
+        </div>
+
+
+        <!-----categeory label and dropdown-->
+        <div class=" d-flex flex-column w-75 ">
+          <label for="categeory" class="form-label">Select category <span class="text-danger">*</span></label>
+          <select name="categeory" id="categeory" class="form-select" required  ngModel
+            [(ngModel)]="category">
+            <option value="">--select categeory--</option>
+            <option value="Software Issue">Software issue</option>
+            <option value="Hardware issue">Hardware issue</option>
+          </select>
+          <!------validation error for categeory-->
+          <div *ngIf="formcollection.controls['categeory']?.hasError('required')&&formcollection.submitted"
+            class="text-danger">
+            Categeory can't be empty.
+          </div>
+        </div>
+
+
+
+
+        <div class=" d-flex flex-column w-75 ">
+          <label for="description" class="form-label">Description</label>
+          <textarea name="description" id="description" class="form-control" [(ngModel)]="description" ngModel cols="2"
+            rows="2"></textarea>
+          <!------validation error for Description-->
+          <!-- <div *ngIf="formcollection.controls['description'].hasError('required')&&formcollection.submitted"
+          class="text-danger">
+          Description can't be empty.
+        </div> -->
+        </div>
+      </div>
+
+      <!-----Description label and dropdown-->
+      <div class="d-flex gap-2 flex-column">
+        <div class=" d-flex flex-column w-75 " *ngIf="clickType==='Edit'">
+          <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" required [(ngModel)]="title" ngModel>
+          <!------validation error for title-->
+          <div *ngIf="formcollection.controls['title']?.hasError('required')&&formcollection.submitted"
+            class="text-danger">
+            Title can't be empty.
+          </div>
+        </div>
+
+        <!-----Priority label and dropdown-->
+        <div class=" d-flex flex-column w-75 ">
+          <label for="Priority" class="form-label">Priority Level <span class="text-danger">*</span></label>
+          <select name="Priority" id="Priority" class="form-select" required [(ngModel)]="priority" ngModel>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <!------validation error for Priority-->
+          <div *ngIf="formcollection.controls['Priority']?.hasError('required')&&formcollection.submitted"
+            class="text-danger">
+            Priority Level can't be empty.
+          </div>
+        </div>
+
+        <!-----Priority label and dropdown-->
+        <div class=" d-flex flex-column w-75">
+          <label for="Email" class="form-label">Email <span class="text-danger" *ngIf="!disabled">*</span></label>
+          <input type="text" id="Email" name="email" class="form-control" [disabled]="disabled" ngModel
+            [(ngModel)]="email" [required]="onbehalf">
+
+          <!------validation error for Priority-->
+          <div *ngIf="formcollection.controls['email']?.hasError('required')&&formcollection.submitted"
+            class="text-danger">
+            Email cant't be left empty!
+          </div>
+          <div class="text-danger" *ngIf="isnotExists && formcollection.submitted">Entered email does't exists try another one.</div>
+          <div class=" d-flex gap-2 align-items-center">
+            <input type="checkbox" id="onbehalf" name="onbehalf" class="form-check" (change)="textchange()"
+              [(ngModel)]="onbehalf">
+            <label for="onbehalf" class="form-label">On Behalf of</label>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-----Priority label and dropdown-->
+    <div class="w-100 p-3">
+      <button class="btn btn-warning float-end" (click)="onSubmit(formcollection)"
+       *ngIf="isCreate">Create</button>
+      <!-----------------update click this buttons will visable to us-->
+      <div [ngClass]="!isCreate?'btn-visable':'btn-hidden'">
+        <div class="d-flex gap-2 float-end">
+          <button class="btn btn-primary  " (click)="onUpdate(formcollection)" [disabled]="isLoading">Update</button>
+          <button class="btn btn-danger" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+
+
+
+
+
+
+  <form action="" *ngIf=" role==='admin'&& isLoading===false" class="ps-3 ps-4 pe-4  pb-2 rounded-2 form-admin" #adminForm="ngForm"
+    (ngSubmit)="onUpdate(adminForm)">
+    <div class="d-flex flex-column gap-1 ">
+      <h2 class="text-center fw-bold">{{clickType}} Request</h2>
+
+      <div class="d-flex gap-4">
+        <div class=" d-flex flex-column w-75 ">
+          <label for="title" class="form-label">RequestId</label>
+          <input type="text" id="RequestId" name="RequestId" class="form-control" required value="{{requestId}}"
+            disabled style="cursor: not-allowed;">
+        </div>
+        <div class=" d-flex flex-column w-75 ">
+          <label for="categeory" class="form-label">Select category</label>
+          <select name="categeory" id="categeory" class="form-select" required name="categeory" disabled
+            style="cursor: not-allowed;" [value]="category">
+            <option value="">--select categeory--</option>
+            <option value="Software Issue">Software issue</option>
+            <option value="Hardware issue">Hardware issue</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="d-flex gap-4">
+
+
+        <div class=" d-flex flex-column w-75 ">
+          <label for="title" class="form-label">Title </label>
+          <input type="text" id="title" name="title" class="form-control" required [value]="title" disabled
+            style="cursor: not-allowed;">
+        </div>
+
+
+        <div class=" d-flex flex-column w-75 ">
+          <label for="description" class="form-label">Description </label>
+          <textarea name="description" id="description" class="form-control" [value]="description"
+            style="cursor: not-allowed;" disabled></textarea>
+        </div>
+
+
+      </div>
+      <div class="d-flex gap-4">
+
+        <div class=" d-flex flex-column w-50 ">
+          <label for="Priority" class="form-label">Priority Level </label>
+          <select name="priority" id="priority" class="form-select" disabled [(ngModel)]="priority"
+            style="cursor: not-allowed;" ngModel>
+            <option>--Select Priority--</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <div class=" d-flex flex-column w-50 ">
+          <label for="email" class="form-label">Email Id</label>
+          <input type="text" id="email" name="email" class="form-control" disabled value="{{email}}"
+            style="cursor: not-allowed;">
+        </div>
+      </div>
+      <div class="d-flex gap-4">
+
+        <div class=" d-flex flex-column w-75 ">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" id="status" class="form-select" [(ngModel)]="status" ngModel [disabled]="isReadonly"
+            [ngStyle]="{'cursor':isReadonly?'not-allowed':'default'}" (change)="chanageStatus()">
+            <option>--Select Status--</option>
+            <option value="Open">Open</option>
+            <option value="InProgress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled" *ngIf="isReadonly">Cancelled</option>
+          </select>
+        </div>
+        <div class=" d-flex flex-column w-75 " [ngStyle]="{visibility:isHidden?'hidden':'visible'}">
+          <label for="comments" class="form-label">Comments</label>
+          <textarea name="comments" id="comment" class="form-control" [(ngModel)]="comments" ngModel
+            [readonly]="isReadonly" [ngStyle]="{'cursor':isReadonly?'not-allowed':'default'}" cols="2" rows="2"
+            [disabled]="isReadonly"></textarea>
+        </div>
+      </div>
+      <div class="d-flex gap-4" [ngStyle]="{visibility:isHidden?'hidden':'visible'}">
+        <div class=" d-flex flex-column w-75 ">
+          <label for="Resolved-by" class="form-label">Resolved By<span class="text-danger">*</span></label>
+          <input type="email" id="Resolved-by" name="Resolved-by" class="form-control" [required]="!isHidden" placeholder="admin123@gmail.com"
+            [(ngModel)]="ResolvedBy" [disabled]="isReadonly" ngModel [readOnly]="isReadonly"
+            [ngStyle]="{'cursor':isReadonly?'not-allowed':'default'}">
+
+          <div
+            *ngIf="adminForm.controls['Resolved-by'].hasError('required')&&adminForm.submitted&&this.status==='Completed'"
+            class="text-danger">
+            ResolvedBy can't be empty.
+          </div>
+        </div>
+        <div class=" d-flex flex-column w-75 ">
+          <label for="Resolved-date" class="form-label">Resolved Date<span class="text-danger">*</span></label>
+          <input type="date" name="Resolve_date" id="Resolved-date" class="form-control" [required]="!isHidden"
+            [min]="minDate" [(ngModel)]="ResolvedDate" ngModel [readOnly]="isReadonly"
+            [ngStyle]="{'cursor':isReadonly?'not-allowed':'default'}" [disabled]="isReadonly">
+
+          <div *ngIf="adminForm.controls['Resolve_date'].hasError('required')&&adminForm.submitted" class="text-danger">
+            ResolvedDate can't be empty.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="clickType==='Edit'" class="d-flex float-end gap-3 pt-2">
+      <button class="btn btn-primary fw-bold">Update</button>
+      <button class="btn btn-danger fw-bold" (click)="onCancel()">Cancel</button>
+    </div>
+
+    <div class="pt-2 text-center" *ngIf="clickType!=='Edit'">
+      <button class="btn btn-primary bi bi-chevron-left" (click)="onCancel()">Go back</button>
+    </div>
+
+  </form>
+
+  <app-loading *ngIf="isLoading" class="position-absolute " style="top:-10px"></app-loading>

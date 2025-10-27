@@ -1,0 +1,45 @@
+.btn-visable{
+    display: block;
+}
+.btn-hidden{
+    display: none;
+    
+}
+form{
+    box-shadow: 10px 10px 10px 10px black;
+    transition: 3s;
+}
+.back-button{
+    display: none;
+}
+.form{
+    position: fixed;
+    top: 100px;
+    transition: 0.8s;
+}
+
+
+/*media query for landscape only*/
+@media screen and (orientation:landscape){
+    .back-button{
+        display: block;
+    }
+    .form{
+        position: static;
+        transform: scale(1);
+    }
+}
+
+/*media query for small devices*/
+@media screen and (max-width:600px){
+    .form{
+        position: static;
+        transform: scale(1.0);
+    }
+}
+@media screen and (orientation:landscape){
+    .form-admin{
+        position: static;
+        transform: scale(1);
+    }
+}

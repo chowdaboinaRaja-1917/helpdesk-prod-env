@@ -1,0 +1,8 @@
+section{
+    height: 75vh;
+}
+@media screen and (orientation:landscape) {
+    section{
+        height: 65vh;
+    }
+}

@@ -1,0 +1,162 @@
+<!-- -----------Dashboard view -->
+<div class="position-fixed w-100" style="top: 80px;"> 
+    <div class="d-flex justify-content-between pt-1 ps-1 pe-1">
+        <span class="fs-4 fw-bold text-decoration-underline">All Requests</span>
+        <div class="d-flex flex-column align-items-end">
+            <a routerLink="newrequest" class="btn btn-warning fw-bold" *ngIf="singleUser?.role==='user'">+ Request</a>
+            <div class="text-decoration-underline pb-1  fw-bold d-none d-md-table-cell">
+                (<span class="text-danger">*</span>Hint: Sorted by status and then by Priority and Timestamp.)
+            </div>
+        </div>
+
+    </div>
+<div></div>
+    <div>
+        <div class="table-responsive"  class="overflow-auto" style="height: 72vh">
+            <table class="table table-white table-hover request-table ">
+                <thead class="position-sticky fw-bold " style="top:0px">
+                    <tr >
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th class="d-none d-md-table-cell">Description</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th class="d-none d-md-table-cell">Comments</th>
+                        <th class="d-none d-md-table-cell">Created By</th>
+                        <th class="d-none d-md-table-cell">Created Date</th>
+                        <th class="d-none d-md-table-cell">Resolved By</th>
+                        <th class="d-none d-md-table-cell">Resolved Date</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="singleUser?.role==='user'"   >
+                    <tr *ngFor="let details of userallrequests">
+                        <td>
+                            <a href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="View"
+                                data-bs-toggle="modal" data-bs-target="#requestDetails"
+                                (click)="viewRequest(details.id,'View')" class="fw-bold">{{details.request_id}}</a>
+                        </td>
+                        <td class="d-md-table-cell">
+                            <p title="{{details.title}}" data-bs-toggle="tooltip">{{details.title}}</p>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <p title="{{details.description}}" data-bs-toggle="tooltip">{{details.description}}</p>
+                        </td>
+                        <td>{{details.status}}</td>
+                        <td>{{details.priority}}</td>
+                        <td class="d-none d-md-table-cell">
+                            <p title="{{details.comments}}" data-bs-toggle="tooltip">
+                                {{details.comments}}</p>
+                        </td>
+                        <td class="d-none d-md-table-cell">{{details.created_by}}</td>
+                        <td class="d-none d-md-table-cell">{{details.created_date}}</td>
+                        <td class="d-none d-md-table-cell">{{details.resolved_by}}</td>
+                        <td class="d-none d-md-table-cell">{{details.resolved_date}}</td>
+                        <td class="mobile-actions">
+                            <span *ngIf="details.status==='Open' || details.status==='InProgress'" class="pe-1">
+                                <button class="bi bi-pencil-square btn-edit bg-primary"
+                                    (click)="editRequest(details,'Edit')"></button>
+                            </span>
+                            <span *ngIf="details.status==='Open' || details.status==='InProgress'">
+                                <button class="bi bi-trash3 btn-delete bg-danger"
+                                    (click)="deleteRequest(details)"></button>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="singleUser?.role==='admin'" >
+                    <tr *ngFor="let details of adminallres">
+                        <td>
+                            <a href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="View"
+                                data-bs-toggle="modal" data-bs-target="#requestDetails"
+                                (click)="viewRequest(details.request_id,'View')" class="fw-bold">{{details.request_id}}</a>
+                        </td>
+                        <td class="d-md-table-cell">
+                            <p title="{{details.title}}" data-bs-toggle="tooltip">{{details.title}}</p>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <p title="{{details.description}}" data-bs-toggle="tooltip">{{details.description}}</p>
+                        </td>
+                        <td>{{details.status}}</td>
+                        <td>{{details.priority}}</td>
+                        <td class="d-none d-md-table-cell">
+                            <p title="{{details.comments}}" data-bs-toggle="tooltip">
+                                {{details.comments}}</p>
+                        </td>
+                        <td class="d-none d-md-table-cell">{{details.created_by}}</td>
+                        <td class="d-none d-md-table-cell">{{details.created_date}}</td>
+                        <td class="d-none d-md-table-cell">{{details.resolved_by}}</td>
+                        <td class="d-none d-md-table-cell">{{details.resolved_date}}</td>
+                        <td class="mobile-actions">
+                            <span *ngIf="details.status==='Open' || details.status==='InProgress'" class="pe-1">
+                                <button class="bi bi-pencil-square btn-edit bg-primary"
+                                    (click)="editRequest(details,'Edit')"></button>
+                            </span>
+                            <span *ngIf="details.status==='Open' || details.status==='InProgress'">
+                                <button class="bi bi-trash3 btn-delete bg-danger"
+                                    (click)="deleteRequest(details)"></button>
+                            </span>
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <app-loading class="position-absolute " [ngStyle]="{'display':isLoading?'block':'none'}"
+            style="top: -20px;"></app-loading>
+    </div>
+
+</div>
+
+<div class="modal fade" id="requestDetails" data-bs-backdrop="static" data-bs-keyboard="false"
+    *ngIf="(singleUser?.role==='user')">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white w-100 ">
+                <h4>Request Details</h4>
+                <button class="btn btn-close bg-white fs-6" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped" align="center">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold ">Title</td>
+                            <td>
+                                <p title="{{requestDetails?.title}}" data-bs-toggle="tooltip">{{requestDetails?.title}}
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Description</td>
+                            <td>
+                                <p data-bs-toggle="tooltip" title="{{requestDetails?.description}}">
+                                    {{requestDetails?.description}}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Status</td>
+                            <td>{{requestDetails?.status}}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Created By</td>
+                            <td>{{requestDetails?.created_by}}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Created Date</td>
+                            <td>{{requestDetails?.created_date}}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Resolved By</td>
+                            <td>{{requestDetails?.resolved_by}}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Resolved Date</td>
+                            <td>{{requestDetails?.resolved_date}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

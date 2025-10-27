@@ -1,0 +1,45 @@
+.newRequest-visible {
+    display: block;
+}
+
+.newRequest-hidden {
+    display: none;
+}
+
+table td p {
+    width:90px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.mobile-actions{
+    font-size: 28px;
+    font-weight: bold;
+}
+.btn-delete,.btn-edit{
+    border-radius: 8px;
+    color: white;
+    border: none;
+    font-size: 20px;
+ }
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bd-violet-bg);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+@media screen and (max-width:600px) {
+    table{
+        font-size: 15px !important;
+    }
+    .mobile-actions{
+       font-size: 14px;
+    }
+    .btn-delete,.btn-edit{
+        font-size: 17px;
+        background-color: white !important;
+        color: black !important;
+    }
+}
+.request-table td{
+    padding:0.2rem 0.2rem !important;
+}
